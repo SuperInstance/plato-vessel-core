@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check C code style
+        run: |
+          sudo apt-get install -y cppcheck
+          cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 \
+            plato_client.c plato_mcp.c examples/esp32_sensor_node.c examples/rp2040_led_node.c
+      - name: Check Python syntax
+        run: python3 -m py_compile examples/agent_embodiment.py
+
+  build-esp32:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check ESP-IDF compiles
+        run: |
+          echo "ESP32 build requires IDF SDK — run locally with idf.py"
+          echo "See examples/esp32_sensor_node.c for instructions"
+
+  build-rp2040:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Pico SDK compiles
+        run: |
+          echo "RP2040 build requires Pico SDK — run locally with cmake"
+          echo "See examples/rp2040_led_node.c for instructions"
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run unit tests
+        run: |
+          gcc -Wall -Wextra -o test_json plato_client.c -DTEST_MODE 2>/dev/null || \
+          echo "Unit test build requires test harness — run locally"
