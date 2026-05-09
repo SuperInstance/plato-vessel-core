@@ -1,5 +1,15 @@
 # 🌊 PLATO Vessel Core
 
+
+## Meta
+
+**Domain:** ai-agents
+**Depends on:** —
+**Depended by:** —
+**Implements:** Tiny C PLATO client for ESP32/RP2040 + embodiment protocol: agents discover IoT ...
+**Related:** —
+
+
 **The bare-metal C client that turns any IoT device into a PLATO room.**
 
 A tiny (≈2KB RAM), zero-dependency C library for ESP32, RP2040, and any POSIX system. Flash it → your device gets a PLATO room → agents arrive. Works itself out of the equipment operator job.
