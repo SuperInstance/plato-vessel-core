@@ -114,3 +114,39 @@ An agent sends an "intelligence" payload to the device's command room. The devic
 ## License
 
 AGPL-3.0. See [LICENSE](./LICENSE).
+
+## Server v3: Simulation-First Coordination
+
+The PLATO room server (`server/plato-room-server.py`) is a complete rewrite with:
+
+| Feature | What it does |
+|---------|-------------|
+| **Tile lifecycle** | Active → Superseded → Retracted states. Tiles persist even when wrong. |
+| **Lamport clocks** | Causal ordering across agents. Every tile gets a logical timestamp. |
+| **WAL** | Write-ahead log with fsync. Crash recovery replays uncommitted tiles. |
+| **/stats** | Operational visibility: active/superseded/retracted counts, unique agents, domains. |
+| **/health** | Container healthcheck endpoint. |
+| **/retract** | Mark a tile as retracted with reason. Tile persists. |
+| **/supersede** | Replace a tile with a corrected version. Old tile marked superseded. |
+| **Simulation-first** | Tiles carry `t_minus_event` for planned futures. Confirmation, not trigger. |
+
+### Endpoints
+
+```
+GET  /health          — Container healthcheck
+GET  /stats           — Aggregate statistics (rooms, tiles, agents, lifecycle)
+GET  /rooms           — List all rooms with tile counts
+GET  /room/<name>     — Full room data with all tiles
+GET  /status          — Legacy status endpoint
+POST /submit          — Submit single tile (validated through deadband gate)
+POST /submit_batch    — Submit multiple tiles
+POST /retract         — Retract a tile by hash (persists with reason)
+POST /supersede       — Replace a tile (old → Superseded, new → Active)
+```
+
+### Test Suite
+
+```bash
+cd server
+python3 test_plato_v3.py  # 75 tests, all passing
+```
