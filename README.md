@@ -150,3 +150,10 @@ POST /supersede       — Replace a tile (old → Superseded, new → Active)
 cd server
 python3 test_plato_v3.py  # 75 tests, all passing
 ```
+
+## Related from the wider fleet (May 2026)
+
+PLATO-NG's Loop Room architecture (everything is a loop or a single run)
+and the conservation law (γ+H = 1.283 - 0.159·log(V)) govern all room state.
+The perpetual daemon pattern ensures continuous operation.
+See https://github.com/SuperInstance/plato-ng for the full framework.
